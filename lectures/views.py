@@ -15,8 +15,8 @@ def index(request):
     sponslectures = Lecture.objects.filter(accepted=True, person_type=0).order_by('order')
     lectures = Lecture.objects.filter(accepted=True, person_type__gte=1).order_by('person_type', 'order')
     lectures_null = Lecture.objects.filter(accepted=True, person_type__gte=1).order_by('person_type', 'order')
-
-    my_lectures = Lecture.objects.filter(author=request.user)
+    if request.user.is_authenticated():
+        my_lectures = Lecture.objects.filter(author=request.user)
 
     workshops = Lecture.objects.filter(accepted=True, person_type__gte=1, type=1).order_by('person_type', 'order')
     if is_lecture_suggesting_enabled():
