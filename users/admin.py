@@ -58,17 +58,28 @@ class UserPreferencesAdmin(admin.ModelAdmin):
         'want_bus',
         'ZOSIA_cost',
         'paid',
-        'minutes_early', 'user__date_joined',
-    'user__last_login')
+        'minutes_early', 'date_joined',
+    'last_login')
     list_filter = ['bus_hour', 'paid', 'bus', 'want_bus', RoomsFilter, 'breakfast_2', 'breakfast_3',
                    'breakfast_4', 'dinner_1', 'dinner_2', 'dinner_3', 'day_1', 'day_2', 'day_3', 'shirt_size', 'shirt_type', 'org']
     list_editable = ('minutes_early', 'paid')
+    list_select_related = ('user',)
 
     def user_name(self, item):
         return smart_unicode(item.user.get_full_name())
 
     def user_email(self, item):
         return str(item.user.email)
+
+    def date_joined(self, obj):
+        return obj.user.date_joined
+    date_joined.short_description = 'date_joined'
+    date_joined.admin_order_field = 'user__date_joined'
+
+    def last_login(self, obj):
+        return obj.user.last_login
+    last_login.short_description = 'last_login'
+    last_login.admin_order_field = 'user__last_login'
 
     def anim_icon(self,id):
         return '<img src="/static_media/images/macthrob-small.png" alt="loading" id="anim%s" style="display:none"/>'%id
