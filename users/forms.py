@@ -2,7 +2,7 @@
 from django import forms
 from django.forms import ModelForm
 from django.utils.translation import ugettext as _
-from users.models import UserPreferences, Participant, Organization
+from users.models import UserPreferences, Participant, Organization, Waiting
 
 
 class RegistrationForm(ModelForm):
@@ -127,5 +127,5 @@ class OrganizationForm(ModelForm):
 class WaitingForm(ModelForm):
 
     class Meta:
-        model = Warning
+        model = Waiting
         fields = ('day_1', 'day_2', 'day_3')
