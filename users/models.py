@@ -279,3 +279,13 @@ class UserPreferences(models.Model):
 
     def get_records_time(self):
         return self.state.rooming_start - timedelta(minutes=self.minutes_early)
+
+
+class Waiting(models.Model):
+
+    user = models.ForeignKey(Participant, unique=True)
+    state = models.ForeignKey('common.ZosiaDefinition')
+
+    day_1 = models.BooleanField()
+    day_2 = models.BooleanField()
+    day_3 = models.BooleanField()

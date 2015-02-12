@@ -19,6 +19,16 @@ def is_registration_enabled():
     return datetime.now() > start_date and datetime.now() < final_date
 
 
+def is_free_rooms():
+    try:
+        definition = ZosiaDefinition.objects.get(active_definition=True)
+        registered = UserPreferences.objects.filter(state=definition).count()
+    except Exception:
+        raise Http404
+
+    return registered < definition.registration_limit
+
+
 def is_registration_disabled():
     return not is_registration_enabled()
 

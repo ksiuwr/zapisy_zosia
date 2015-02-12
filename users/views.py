@@ -1,15 +1,16 @@
 # -*- coding: UTF-8 -*-
 from datetime import timedelta
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.auth.tokens import default_token_generator as token_generator
 from django.utils.http import base36_to_int
 from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.views.decorators.cache import never_cache
 
-from common.helpers import is_registration_disabled
+from common.helpers import is_registration_disabled, is_free_rooms
 from common.models import ZosiaDefinition
-from users.forms import RegistrationForm, PreferencesForm, OrganizationForm, preferences_form_fabric
+from users.forms import RegistrationForm, PreferencesForm, OrganizationForm, preferences_form_fabric, WaitingForm
 
 from users.models import UserPreferences, Participant
 from users.utils import send_confirmation_mail, prepare_data
@@ -18,6 +19,9 @@ from users.utils import send_confirmation_mail, prepare_data
 def register(request):
     if is_registration_disabled():
         raise Http404
+
+    if not is_free_rooms():
+        return HttpResponseRedirect('/waiting/')
 
     title = "Registration"
     definition = get_object_or_404(ZosiaDefinition, active_definition=True)
@@ -47,12 +51,43 @@ def register(request):
     return render_to_response('register_form.html', locals())
 
 
+def waiting_list(request):
+    title = "Registration"
+    definition = get_object_or_404(ZosiaDefinition, active_definition=True)
+
+    if request.POST:
+        form = WaitingForm(request.POST)
+        user_form = RegistrationForm(request.POST)
+
+        f1 = form.is_valid()
+        f2 = user_form.is_valid()
+
+        if f1 and f2:
+            user = user_form.save()
+            send_confirmation_mail(request, user, definition)
+
+            waiting = form.save(commit=False)
+            waiting.state = definition
+            waiting.user = user
+            waiting.save()
+
+            return HttpResponseRedirect('/register/thanks/')
+
+    form = WaitingForm(request.POST)
+    user_form = RegistrationForm(request.POST)
+
+    return render_to_response('waiting.html', {'pref_form': form, 'user_form': user_form})
+
 @never_cache
 @login_required
 def change_preferences(request):
     user = request.user
     title = "Change preferences"
-    prefs = UserPreferences.objects.get(user=user)
+    try:
+        prefs = UserPreferences.objects.get(user=user)
+    except ObjectDoesNotExist:
+        return HttpResponseRedirect('/waiting/')
+
     user_paid = prefs.paid
     definition = get_object_or_404(ZosiaDefinition, active_definition=True)
     user_opening_hour = definition.rooming_start - timedelta(minutes=prefs.minutes_early) # for sure to change

@@ -122,3 +122,10 @@ class OrganizationForm(ModelForm):
             org.save()
 
         return org
+
+
+class WaitingForm(ModelForm):
+
+    class Meta:
+        model = Warning
+        fields = ('day_1', 'day_2', 'day_3')

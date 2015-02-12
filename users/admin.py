@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.contrib.auth.models import Group
 from django.db.models import Count
 from django.utils.encoding import smart_unicode
-from models import UserPreferences, SHIRT_TYPES_CHOICES, Organization, Participant
+from models import UserPreferences, SHIRT_TYPES_CHOICES, Organization, Participant, Waiting
 
 
 class ParticipantAdmin(admin.ModelAdmin):
@@ -172,7 +172,11 @@ class UserPreferencesAdmin(admin.ModelAdmin):
 class OrganizationAdmin(admin.ModelAdmin):
     list_display = ('name', 'accepted')
 
+class WaitingAdmin(admin.ModelAdmin):
+    list_display = ('user', 'day_1', 'day_2', 'day_3')
+
 admin.site.unregister(Group)
+admin.site.register(Waiting, WaitingAdmin)
 admin.site.register(UserPreferences, UserPreferencesAdmin)
 admin.site.register(Organization, OrganizationAdmin)
 admin.site.register(Participant, ParticipantAdmin)

@@ -8,6 +8,9 @@ class ZosiaDefinition(models.Model):
     # dates
     registration_start			= models.DateTimeField()
     registration_final			= models.DateTimeField()
+
+    registration_limit          = models.IntegerField(default=170)
+
     payment_deadline            = models.DateTimeField()
     lectures_suggesting_start	= models.DateTimeField()
     lectures_suggesting_final	= models.DateTimeField()

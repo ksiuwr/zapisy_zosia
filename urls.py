@@ -44,6 +44,7 @@ urlpatterns = patterns('',
 
      # registration related
      (r'^register/$', users.views.register),
+     (r'^waiting/$', users.views.waiting_list()),
      (r'^register/thanks/$', users.views.thanks),
      (r'^register/regulations/$', users.views.regulations),
 
