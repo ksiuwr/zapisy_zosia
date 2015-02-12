@@ -76,7 +76,7 @@ def waiting_list(request):
     form = WaitingForm(request.POST)
     user_form = RegistrationForm(request.POST)
 
-    return render_to_response('waiting.html', {'pref_form': form, 'user_form': user_form})
+    return render_to_response('waiting.html', {'pref_form': form, 'user_form': user_form, 'definition': definition})
 
 @never_cache
 @login_required
