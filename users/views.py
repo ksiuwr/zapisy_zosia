@@ -55,6 +55,12 @@ def waiting_list(request):
     title = "Registration"
     definition = get_object_or_404(ZosiaDefinition, active_definition=True)
 
+
+
+    date_1, date_2, date_3, date_4 = definition.zosia_start, (definition.zosia_start + timedelta(days=1)),\
+                                                 (definition.zosia_start + timedelta(days=2)),\
+                                                 (definition.zosia_start + timedelta(days=3))
+
     if request.POST:
         form = WaitingForm(request.POST)
         user_form = RegistrationForm(request.POST)
@@ -76,7 +82,9 @@ def waiting_list(request):
     form = WaitingForm(request.POST)
     user_form = RegistrationForm(request.POST)
 
-    return render_to_response('waiting.html', {'pref_form': form, 'user_form': user_form, 'definition': definition})
+    return render_to_response('waiting.html', {'pref_form': form, 'user_form': user_form,
+                                               'date_1': date_1, 'date_2': date_2, 'date_3': date_3, 'date_4': date_4,
+                                               'definition': definition})
 
 @never_cache
 @login_required
