@@ -21,6 +21,9 @@ def index(request):
     """
 
     """
+    if not request.user.has_opened_records:
+        raise Http404
+
     user = request.user
     title = "Rooms"
     return render_to_response('rooms.html',locals())
@@ -30,6 +33,8 @@ def index(request):
 @cache_page(30)
 @csrf_exempt
 def json_rooms_list(request):
+    if not request.user.has_opened_records:
+        raise Http404
     json = Room.objects.to_json(request)
     return HttpResponse(json, mimetype="application/json")
 
