@@ -11,7 +11,7 @@ def send_time_email(preference):
         c = {
             'time': preference.get_records_time()
             }
-        send_mail( u'[ZOSIA 2014] Twój czas otwarcia zapisów na pokoje',
+        send_mail( u'[ZOSIA 2015] Twój czas otwarcia zapisów na pokoje',
             t.render(Context(c)),
             'ksi@cs.uni.wroc.pl',
             [ preference.user.email ],

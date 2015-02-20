@@ -125,12 +125,9 @@ class Participant(AbstractBaseUser, PermissionsMixin):
 
     @property
     def has_opened_records(self):
-        try:
-            preference = UserPreferences.objects.select_related('state').get(user=self)
-        except Exception:
-            raise Http404
-        user_openning_hour = preference.state.rooming_start - timedelta(minutes=preference.minutes_early)
-        return user_openning_hour <= datetime.now() <= preference.state.rooming_final
+        preference = get_object_or_404(UserPreferences.objects.select_related('state'), user=self)
+        user_opening_hour = preference.state.rooming_start - timedelta(minutes=preference.minutes_early)
+        return user_opening_hour <= datetime.now() <= preference.state.rooming_final
 
 
 class UserPreferences(models.Model):
