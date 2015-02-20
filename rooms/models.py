@@ -59,6 +59,9 @@ class Room(models.Model):
     # locators = models.ManyToManyField(User, through='RoomMembership')
     objects = RoomManager()
 
+    class Meta:
+        ordering = ('number',)
+
     def get_no_locators(self):
         return UserInRoom.objects.filter(room=self.id).count()
 
