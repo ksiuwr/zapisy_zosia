@@ -35,7 +35,7 @@ class RoomManager(models.Manager):
     
     def to_json(self, request=None):
         if self.update_required:
-            self.cache = [ x.to_json(request) for x in self.all() ]
+            self.cache = [ x.to_json(request) for x in self.filter(hidden=False) ]
             # self.update_required = False # comment this line to disable caching
         return "[%s]" % (','.join(self.cache))
 

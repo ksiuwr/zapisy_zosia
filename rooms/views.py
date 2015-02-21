@@ -35,7 +35,7 @@ def index(request):
 def json_rooms_list(request):
     if not request.user.has_opened_records:
         raise Http404
-    json = Room.objects.filter(hidden=False).to_json(request)
+    json = Room.objects.to_json(request)
     return HttpResponse(json, mimetype="application/json")
 
 def dict_to_json(d):
