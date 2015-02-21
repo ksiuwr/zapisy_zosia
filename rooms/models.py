@@ -46,6 +46,8 @@ class Room(models.Model):
     description         = models.CharField(max_length=255, null=True, blank=True)
     password            = models.CharField(max_length=16)
 
+    hidden = models.BooleanField(default=False)
+
     users = models.ManyToManyField(settings.AUTH_USER_MODEL, through='UserInRoom')
 
     # unlock time for first locator

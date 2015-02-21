@@ -35,7 +35,7 @@ def index(request):
 def json_rooms_list(request):
     if not request.user.has_opened_records:
         raise Http404
-    json = Room.objects.to_json(request)
+    json = Room.objects.filter(hidden=False).to_json(request)
     return HttpResponse(json, mimetype="application/json")
 
 def dict_to_json(d):
@@ -64,7 +64,7 @@ def get_room_locators(room):
 def trytogetin_room(request):
     if not request.POST: raise Http404
     if not has_user_opened_records(request.user): return HttpResponse('fail')
-    room = Room.objects.get(id=int(request.POST['rid']))
+    room = Room.objects.filter(hidden=False).get(id=int(request.POST['rid']))
     if room.password == request.POST['key']:
         get_in_room(request.user, room)
         return HttpResponse('ok')
@@ -95,7 +95,7 @@ def close_room(request):
         if room.password == request.POST['key']:
             no_locators = UserInRoom.objects.filter(room=room).count()
         if no_locators == 1: # user is still alone in this room
-                timeout = timedelta(0,21600,0) # 6h == 21600
+                timeout = timedelta(0,4*60*60,0)
                 occupation.room.short_unlock_time = datetime.now() + timeout
                 occupation.room.save()
                 return HttpResponse('ok')
@@ -128,7 +128,7 @@ def leave_room(request):
 def modify_room(request):
     # get correct room based on rid
     room_number = request.POST['rid'][1:]
-    room = Room.objects.get(number=room_number)
+    room = Room.objects.filter(hidden=False).get(number=room_number)
     status = room.get_status(request)
     json = { "room_number":room_number, "buttons":'', 'msg':'', 'form':'' }
     prev_occupation = None
