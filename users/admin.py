@@ -4,6 +4,7 @@ from django.contrib import admin
 from django.contrib.auth.models import Group
 from django.db.models import Count
 from django.utils.encoding import smart_unicode
+from django.shortcuts import get_object_or_404
 from models import UserPreferences, SHIRT_TYPES_CHOICES, Organization, Participant, Waiting
 from users.utils import send_confirmation_mail
 
