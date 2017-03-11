@@ -4,11 +4,22 @@ from django.contrib import admin
 from django.contrib.auth.models import Group
 from django.db.models import Count
 from django.utils.encoding import smart_unicode
+from django.shortcuts import get_object_or_404
+
+from common.models import ZosiaDefinition
 from models import UserPreferences, SHIRT_TYPES_CHOICES, Organization, Participant, Waiting
+from users.utils import send_confirmation_mail
+
+def resend_confirmation_email(modeladmin, request, queryset):
+    definition = get_object_or_404(ZosiaDefinition, active_definition=True)
+    for participant in queryset:
+    	send_confirmation_mail(request, participant, definition)
+
+resend_confirmation_email.short_description = "Wyślij ponownie email aktywacyjny"
 
 
 class ParticipantAdmin(admin.ModelAdmin):
-    pass
+    actions = [resend_confirmation_email]
 
 
 class RoomsFilter(admin.SimpleListFilter):
